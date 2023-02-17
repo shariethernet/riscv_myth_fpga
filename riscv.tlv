@@ -5,48 +5,7 @@
 \SV
    m4_ifelse_block(M4_MAKERCHIP, 1,['
    m4_makerchip_module   
-   '],['
-   module riscv(
-   input clk, 
-   input reset,
-   input [31:0] idata0,
-   input [31:0] idata1,
-   input [31:0] idata2,
-   input [31:0] idata3,
-   input [31:0] idata4,
-   input [31:0] idata5,
-   input [31:0] idata6,
-   input [31:0] idata7,
-   input [31:0] idata8,
-   input [31:0] idata9,
-   input [31:0] idata10,
-   input [31:0] idata11,
-   input [31:0] idata12,
-   input [31:0] idata13,
-   input [31:0] idata14,
-   input [31:0] idata15,
-   input [31:0] idata16,
-   input [31:0] idata17,
-   input [31:0] idata18,
-   input [31:0] idata19,
-   input [31:0] idata20,
-   input [31:0] idata21,
-   input [31:0] idata22,
-   input [31:0] idata23,
-   input [31:0] idata24,
-   input [31:0] idata25,
-   input [31:0] idata26,
-   input [31:0] idata27,
-   input [31:0] idata28,
-   input [31:0] idata29,
-   input [31:0] idata30,
-   input [31:0] idata31,
-   output reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7,
-                    reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15,
-                    reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23,
-                    reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31
-   );
-   '])  
+   '],[''])  
             
 \TLV
 
@@ -64,7 +23,6 @@
    //  r14 (a4): Sum
    // 
    // External to function:
-   m4_ifelse_block(M4_MAKERCHIP, 1,['
    m4_asm(ADD, r10, r0, r0)             // Initialize r10 (a0) to 0.
    // Function:
    m4_asm(ADD, r14, r10, r0)            // Initialize sum register a4 with 0x0
@@ -79,7 +37,6 @@
    // Optional:
    // m4_asm(JAL, r7, 00000000000000000000) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
-   '],[''])
 
 
    |cpu
@@ -187,7 +144,7 @@
 
          // Branch and jump
          $br_tgt_pc[31:0] = $pc + $imm;
-         $jalr_tgt_pc[31:0] = $src1_value + $imm;
+         $jalr_tgt_pc[31:0] = ($src1_value + $imm) & 32'hFFFFFFFE;
          
          
       @3
@@ -257,44 +214,7 @@
          $ld_data[31:0] = $dmem_rd_data[31:0]; 
          
          `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_sb $is_sh $is_sw)
-   \SV_plus
-      m4_ifelse_block(M4_MAKERCHIP, 1,['
-      '],['
-      always @ (posedge clk) begin    
-         *reg0  = |cpu/xreg[0]>>5$value;          
-         *reg1  = |cpu/xreg[1]>>5$value;
-         *reg2  = |cpu/xreg[2]>>5$value;
-         *reg3  = |cpu/xreg[3]>>5$value;
-         *reg4  = |cpu/xreg[4]>>5$value;
-         *reg5  = |cpu/xreg[5]>>5$value;      
-         *reg6  = |cpu/xreg[6]>>5$value;
-         *reg7  = |cpu/xreg[7]>>5$value;
-         *reg8  = |cpu/xreg[8]>>5$value;          
-         *reg9  = |cpu/xreg[9]>>5$value;
-         *reg10 = |cpu/xreg[10]>>5$value;
-         *reg11 = |cpu/xreg[11]>>5$value;
-         *reg12 = |cpu/xreg[12]>>5$value;
-         *reg13 = |cpu/xreg[13]>>5$value;      
-         *reg14 = |cpu/xreg[14]>>5$value;
-         *reg15 = |cpu/xreg[15]>>5$value;
-         *reg16 = |cpu/xreg[16]>>5$value;          
-         *reg17 = |cpu/xreg[17]>>5$value;
-         *reg18 = |cpu/xreg[18]>>5$value;
-         *reg19 = |cpu/xreg[19]>>5$value;
-         *reg20 = |cpu/xreg[20]>>5$value;
-         *reg21 = |cpu/xreg[21]>>5$value;      
-         *reg22 = |cpu/xreg[22]>>5$value;
-         *reg23 = |cpu/xreg[23]>>5$value;
-         *reg24 = |cpu/xreg[24]>>5$value;          
-         *reg25 = |cpu/xreg[25]>>5$value;
-         *reg26 = |cpu/xreg[26]>>5$value;
-         *reg27 = |cpu/xreg[27]>>5$value;
-         *reg28 = |cpu/xreg[28]>>5$value;
-         *reg29 = |cpu/xreg[29]>>5$value;      
-         *reg30 = |cpu/xreg[30]>>5$value;
-         *reg31 = |cpu/xreg[31]>>5$value;
-      end
-      '])
+
 
 
    
@@ -307,9 +227,8 @@
       m4+imem(@1)    // Args: (read stage)
       m4+rf(@2, @3)  // Args: (read stage, write stage) - if equal, no register bypass is required
       m4+dmem(@4)    // Args: (read/write stage)
-   m4_ifelse_block(M4_MAKERCHIP, 1,['
+      m4+outputs_fpga(@0)
    m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
-   '],[''])
 \SV
    endmodule
 
