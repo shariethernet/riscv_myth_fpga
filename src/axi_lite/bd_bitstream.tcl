@@ -1056,7 +1056,7 @@ make_wrapper -files [get_files ./harness_axi_proj/harness_axi_proj.srcs/sources_
 
 add_files -norecurse ./harness_axi_proj/harness_axi_proj.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v
 
-launch_runs impl_1 -to_step write_bitstream -jobs 16
+launch_runs impl_1 -to_step write_bitstream -jobs 2
 
 puts "Generating bitstream. It will take some time!"
 
