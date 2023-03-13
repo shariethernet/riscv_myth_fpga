@@ -1,11 +1,11 @@
 \m4_TLV_version 1d -p verilog --bestsv --noline: tl-x.org
-
-\SV   
-   m4_include_lib(['https://raw.githubusercontent.com/BalaDhinesh/RISCV_MYTH_WORKSHOP/main/risc-v_shell_lib.tlv'])
 \SV
-   m4_ifelse_block(M4_MAKERCHIP, 1,['
-   m4_makerchip_module   
-   '],[''])  
+   // This code can be found in: https://github.com/stevehoover/RISC-V_MYTH_Workshop
+   
+   m4_include_lib(['https://raw.githubusercontent.com/BalaDhinesh/RISC-V_MYTH_Workshop/master/tlv_lib/risc-v_shell_lib.tlv'])
+
+\SV
+   m4_makerchip_module   // (Expanded in Nav-TLV pane.) 
             
 \TLV
 
@@ -227,7 +227,7 @@
       m4+imem(@1)    // Args: (read stage)
       m4+rf(@2, @3)  // Args: (read stage, write stage) - if equal, no register bypass is required
       m4+dmem(@4)    // Args: (read/write stage)
-      m4+outputs_fpga(@0)
+      m4+myth_fpga(@0)
    m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
 \SV
    endmodule
